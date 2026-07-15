@@ -180,17 +180,10 @@ function WhyMe() {
 }
 
 function Sets() {
-  const tracks = [
-    { title: "XNEY — Integra (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:19", url: "https://soundcloud.com/xneydj/integra-original-mix" },
-    { title: "XNEY — Sonante (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:28", url: "https://soundcloud.com/xneydj/sonante-original-mix" },
-    { title: "XNEY — Inner Peace", genre: "Minimal / Deep Tech", dur: "6:58", url: "https://soundcloud.com/xneydj/inner-peace" },
-    { title: "XNEY — Unconditional (Original Mix)", genre: "Deep House", dur: "7:32", url: "https://soundcloud.com/xneydj/unconditional-original-mix" },
-    { title: "XNEY — Pineal", genre: "Minimal / Deep Tech", dur: "5:36", url: "https://soundcloud.com/xneydj/pineal" },
-    { title: "XNEY — Pleasure (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:05", url: "https://soundcloud.com/xneydj/pleasure-original-mix" },
-  ];
-  const [active, setActive] = useState<number | null>(null);
-  const scEmbed = (url: string) =>
-    `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff2d55&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`;
+  const profileUrl = "https://soundcloud.com/xneydj";
+  const embedSrc = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
+    profileUrl
+  )}&color=%23ff2d55&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true`;
 
   return (
     <section id="sets" className="py-24 md:py-32 border-t border-border">
@@ -198,53 +191,34 @@ function Sets() {
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div>
             <div className="tag mb-4">03 · Sesiones seleccionadas</div>
-            <h2 className="text-4xl md:text-6xl font-bold">Escúchalo <span className="italic font-normal text-primary">antes de reservar.</span></h2>
+            <h2 className="text-4xl md:text-6xl font-bold">
+              Escúchalo <span className="italic font-normal text-primary">antes de reservar.</span>
+            </h2>
+            <p className="text-muted-foreground mt-4 max-w-xl">
+              Reproduce directamente desde SoundCloud. Todas las pistas y sets subidos por XNEY, en orden.
+            </p>
           </div>
-          <a href="https://soundcloud.com/xneydj" target="_blank" rel="noopener" className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground inline-flex items-center gap-2">
+          <a
+            href={profileUrl}
+            target="_blank"
+            rel="noopener"
+            className="font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground inline-flex items-center gap-2"
+          >
             Ver todo en SoundCloud <ArrowRight className="w-3 h-3" />
           </a>
         </div>
-        <div className="space-y-px bg-border">
-          {tracks.map((t, i) => {
-            const isActive = active === i;
-            return (
-              <div key={t.title} className="bg-background">
-                <button
-                  type="button"
-                  onClick={() => setActive(isActive ? null : i)}
-                  className="w-full text-left p-5 md:p-6 grid grid-cols-12 gap-4 items-center hover:bg-card group transition"
-                >
-                  <div className="col-span-1 font-mono text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</div>
-                  <div className="col-span-1">
-                    <div className={`w-10 h-10 border flex items-center justify-center transition ${isActive ? "border-primary bg-primary/10" : "border-border group-hover:border-primary"}`}>
-                      <Play className="w-3 h-3 fill-current" />
-                    </div>
-                  </div>
-                  <div className="col-span-6 md:col-span-5">
-                    <div className="font-medium truncate">{t.title}</div>
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{t.genre}</div>
-                  </div>
-                  <div className="col-span-3 hidden md:block">
-                    <Waveform bars={40} className={`transition ${isActive ? "opacity-90" : "opacity-40 group-hover:opacity-80"}`} />
-                  </div>
-                  <div className="col-span-4 md:col-span-2 text-right font-mono text-xs text-muted-foreground">{t.dur}</div>
-                </button>
-                {isActive && (
-                  <div className="px-5 md:px-6 pb-6">
-                    <iframe
-                      title={t.title}
-                      width="100%"
-                      height="120"
-                      scrolling="no"
-                      frameBorder="no"
-                      allow="autoplay"
-                      src={scEmbed(t.url)}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+
+        <div className="border border-border bg-card/30 p-2 md:p-3">
+          <iframe
+            title="XNEY en SoundCloud"
+            width="100%"
+            height="520"
+            scrolling="no"
+            frameBorder="no"
+            allow="autoplay"
+            src={embedSrc}
+            className="block w-full"
+          />
         </div>
       </div>
     </section>
