@@ -181,13 +181,17 @@ function WhyMe() {
 
 function Sets() {
   const tracks = [
-    { title: "XNEY — Integra (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:19" },
-    { title: "XNEY — Sonante (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:28" },
-    { title: "XNEY — Inner Peace", genre: "Minimal / Deep Tech", dur: "6:58" },
-    { title: "XNEY — Unconditional (Original Mix)", genre: "Deep House", dur: "7:32" },
-    { title: "XNEY — Pineal", genre: "Minimal / Deep Tech", dur: "5:36" },
-    { title: "XNEY — Pleasure (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:05" },
+    { title: "XNEY — Integra (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:19", url: "https://soundcloud.com/xneydj/integra-original-mix" },
+    { title: "XNEY — Sonante (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:28", url: "https://soundcloud.com/xneydj/sonante-original-mix" },
+    { title: "XNEY — Inner Peace", genre: "Minimal / Deep Tech", dur: "6:58", url: "https://soundcloud.com/xneydj/inner-peace" },
+    { title: "XNEY — Unconditional (Original Mix)", genre: "Deep House", dur: "7:32", url: "https://soundcloud.com/xneydj/unconditional-original-mix" },
+    { title: "XNEY — Pineal", genre: "Minimal / Deep Tech", dur: "5:36", url: "https://soundcloud.com/xneydj/pineal" },
+    { title: "XNEY — Pleasure (Original Mix)", genre: "Minimal / Deep Tech", dur: "5:05", url: "https://soundcloud.com/xneydj/pleasure-original-mix" },
   ];
+  const [active, setActive] = useState<number | null>(null);
+  const scEmbed = (url: string) =>
+    `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23ff2d55&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`;
+
   return (
     <section id="sets" className="py-24 md:py-32 border-t border-border">
       <div className="max-w-7xl mx-auto px-6">
@@ -201,24 +205,46 @@ function Sets() {
           </a>
         </div>
         <div className="space-y-px bg-border">
-          {tracks.map((t, i) => (
-            <div key={t.title} className="bg-background p-5 md:p-6 grid grid-cols-12 gap-4 items-center hover:bg-card group cursor-pointer transition">
-              <div className="col-span-1 font-mono text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</div>
-              <div className="col-span-1">
-                <div className="w-10 h-10 border border-border group-hover:border-primary flex items-center justify-center transition">
-                  <Play className="w-3 h-3 fill-current" />
-                </div>
+          {tracks.map((t, i) => {
+            const isActive = active === i;
+            return (
+              <div key={t.title} className="bg-background">
+                <button
+                  type="button"
+                  onClick={() => setActive(isActive ? null : i)}
+                  className="w-full text-left p-5 md:p-6 grid grid-cols-12 gap-4 items-center hover:bg-card group transition"
+                >
+                  <div className="col-span-1 font-mono text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</div>
+                  <div className="col-span-1">
+                    <div className={`w-10 h-10 border flex items-center justify-center transition ${isActive ? "border-primary bg-primary/10" : "border-border group-hover:border-primary"}`}>
+                      <Play className="w-3 h-3 fill-current" />
+                    </div>
+                  </div>
+                  <div className="col-span-6 md:col-span-5">
+                    <div className="font-medium truncate">{t.title}</div>
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{t.genre}</div>
+                  </div>
+                  <div className="col-span-3 hidden md:block">
+                    <Waveform bars={40} className={`transition ${isActive ? "opacity-90" : "opacity-40 group-hover:opacity-80"}`} />
+                  </div>
+                  <div className="col-span-4 md:col-span-2 text-right font-mono text-xs text-muted-foreground">{t.dur}</div>
+                </button>
+                {isActive && (
+                  <div className="px-5 md:px-6 pb-6">
+                    <iframe
+                      title={t.title}
+                      width="100%"
+                      height="120"
+                      scrolling="no"
+                      frameBorder="no"
+                      allow="autoplay"
+                      src={scEmbed(t.url)}
+                    />
+                  </div>
+                )}
               </div>
-              <div className="col-span-6 md:col-span-5">
-                <div className="font-medium truncate">{t.title}</div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{t.genre}</div>
-              </div>
-              <div className="col-span-3 hidden md:block">
-                <Waveform bars={40} className="opacity-40 group-hover:opacity-80 transition" />
-              </div>
-              <div className="col-span-4 md:col-span-2 text-right font-mono text-xs text-muted-foreground">{t.dur}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
