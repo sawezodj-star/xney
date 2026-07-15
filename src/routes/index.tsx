@@ -357,6 +357,32 @@ function FAQ() {
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      name: String(fd.get("name") || "").trim(),
+      email: String(fd.get("email") || "").trim(),
+      city: String(fd.get("city") || "").trim(),
+      event_date: String(fd.get("date") || ""),
+      event_type: String(fd.get("type") || ""),
+      message: String(fd.get("message") || "").trim(),
+    };
+    const { supabase } = await import("@/integrations/supabase/client");
+    const { error: insertError } = await supabase.from("bookings").insert(payload);
+    setSubmitting(false);
+    if (insertError) {
+      setError("No pudimos enviar tu solicitud. Intenta de nuevo o escríbenos a xneymusic@gmail.com");
+      return;
+    }
+    setSent(true);
+  }
+
   return (
     <section id="contacto" className="py-24 md:py-32 border-t border-border">
       <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-16">
@@ -389,13 +415,7 @@ function Contact() {
             </a>
           </div>
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-          }}
-          className="bg-card border border-border p-8 md:p-10 space-y-6"
-        >
+        <form onSubmit={handleSubmit} className="bg-card border border-border p-8 md:p-10 space-y-6">
           {sent ? (
             <div className="py-16 text-center">
               <div className="w-14 h-14 mx-auto mb-6 border border-primary rounded-full flex items-center justify-center">
@@ -439,11 +459,15 @@ function Contact() {
                   className="w-full bg-background border border-border px-4 py-3 focus:border-primary outline-none transition resize-none"
                 />
               </div>
+              {error && (
+                <p className="text-xs text-destructive font-mono">{error}</p>
+              )}
               <button
                 type="submit"
-                className="w-full bg-foreground text-background py-4 font-mono text-xs uppercase tracking-widest hover:bg-primary transition inline-flex items-center justify-center gap-2"
+                disabled={submitting}
+                className="w-full bg-foreground text-background py-4 font-mono text-xs uppercase tracking-widest hover:bg-primary transition inline-flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                Enviar solicitud <ArrowRight className="w-4 h-4" />
+                {submitting ? "Enviando..." : <>Enviar solicitud <ArrowRight className="w-4 h-4" /></>}
               </button>
               <p className="text-xs text-muted-foreground text-center">
                 Respuesta garantizada en menos de 24 horas.
